@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Book train tickets easily - Improved IRCTC Interface">
+    <title>Indian Railways - Book Train Tickets</title>
+    
+    <style>
+        /* ===== MODERN COLOR SCHEME ===== */
+        :root {
+            --primary-blue: #0066CC;
+            --primary-dark: #003D7A;
+            --accent-orange: #FF6B35;
+            --success-green: #28A745;
+            --warning-yellow: #FFC107;
+            --error-red: #DC3545;
+            --light-bg: #F8F9FA;
+            --white: #FFFFFF;
+            --text-dark: #212529;
+            --text-gray: #6C757D;
+            --border-color: #DEE2E6;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+            color: var(--white);
+            padding: 20px 0;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--white);
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--white);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 5px;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .login-btn {
+            background: var(--accent-orange);
+            color: var(--white);
+            padding: 10px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-dark) 100%);
+            padding: 60px 20px;
+            text-align: center;
+            color: var(--white);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+
+        /* ===== SEARCH CARD ===== */
+        .search-container {
+            max-width: 900px;
+            margin: -80px auto 40px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .search-title {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-form {
+            display: grid;
+            gap: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+
+        .help-icon {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background: var(--primary-blue);
+            color: var(--white);
+            border-radius: 50%;
+            text-align: center;
+            font-size: 0.75rem;
+            line-height: 18px;
+            cursor: help;
+            margin-left: 5px;
+        }
+
+        .tooltip {
+            display: none;
+            position: absolute;
+            background: var(--text-dark);
+            color: var(--white);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            width: 250px;
+            z-index: 100;
+            top: -10px;
+            left: 100%;
+            margin-left: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .help-icon:hover + .tooltip {
+            display: block;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            background: var(--white);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        .swap-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--accent-orange);
+            color: var(--white);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(255, 107, 53, 0.3);
+            transition: transform 0.3s ease;
+            z-index: 10;
+        }
+
+        .swap-btn:hover {
+            transform: translate(-50%, -50%) rotate(180deg);
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 30px;
+            padding: 15px 0;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, var(--accent-orange) 0%, #FF4500 100%);
+            color: var(--white);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        /* ===== CLASS INFO SECTION ===== */
+        .class-info {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .class-info h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--primary-dark);
+            font-size: 2rem;
+        }
+
+        .class-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .class-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .class-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .class-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+        }
+
+        .class-full-name {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            margin-bottom: 15px;
+        }
+
+        .class-features {
+            list-style: none;
+            padding: 0;
+        }
+
+        .class-features li {
+            padding: 8px 0;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .class-features li::before {
+            content: '✓';
+            color: var(--success-green);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        /* ===== RESULTS SECTION (EXAMPLE) ===== */
+        .results-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: none; /* Hidden by default */
+        }
+
+        .results-header {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .filter-section {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .filter-btn {
+            padding: 8px 20px;
+            border: 2px solid var(--border-color);
+            background: var(--white);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--primary-blue);
+            color: var(--white);
+            border-color: var(--primary-blue);
+        }
+
+        .train-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .train-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .train-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .train-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .train-number {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .train-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .train-schedule {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .station-time {
+            text-align: center;
+        }
+
+        .time {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .station {
+            font-size: 0.95rem;
+            color: var(--text-gray);
+            margin-top: 5px;
+        }
+
+        .duration {
+            text-align: center;
+            border-left: 2px solid var(--border-color);
+            border-right: 2px solid var(--border-color);
+            padding: 0 20px;
+        }
+
+        .duration-time {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .duration-label {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+        }
+
+        .availability-section {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .availability-item {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .availability-item:hover {
+            border-color: var(--primary-blue);
+            background: rgba(0, 102, 204, 0.05);
+        }
+
+        .class-type {
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+        }
+
+        .seats-available {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .available {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success-green);
+        }
+
+        .waitlist {
+            background: rgba(255, 193, 7, 0.1);
+            color: #D39E00;
+        }
+
+        .not-available {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--error-red);
+        }
+
+        .fare {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            margin-top: 5px;
+        }
+
+        .book-btn {
+            background: var(--success-green);
+            color: var(--white);
+            border: none;
+            padding: 10px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .book-btn:hover {
+            background: #218838;
+            transform: scale(1.05);
+        }
+
+        /* ===== FEATURES SECTION ===== */
+        .features {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .features h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--primary-dark);
+            font-size: 2rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 30px;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px var(--shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+        }
+
+        .feature-desc {
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: var(--primary-dark);
+            color: var(--white);
+            padding: 40px 20px 20px;
+            margin-top: 60px;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--white);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .header-nav {
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+            }
+
+            .nav-link {
+                width: 100%;
+                text-align: center;
+            }
+
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .search-card {
+                padding: 25px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .swap-btn {
+                display: none;
+            }
+
+            .train-schedule {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .duration {
+                border: none;
+                border-top: 2px solid var(--border-color);
+                border-bottom: 2px solid var(--border-color);
+                padding: 15px 0;
+            }
+
+            .availability-section {
+                flex-direction: column;
+            }
+
+            .availability-item {
+                min-width: 100%;
+            }
+
+            .train-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+
+            .search-title {
+                font-size: 1.2rem;
+            }
+
+            .class-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== ALERT/NOTIFICATION ===== */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-info {
+            background: rgba(0, 102, 204, 0.1);
+            border-left: 4px solid var(--primary-blue);
+            color: var(--primary-dark);
+        }
+
+        .alert-success {
+            background: rgba(40, 167, 69, 0.1);
+            border-left: 4px solid var(--success-green);
+            color: #155724;
+        }
+
+        .alert-warning {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid var(--warning-yellow);
+            color: #856404;
+        }
+
+        .alert-error {
+            background: rgba(220, 53, 69, 0.1);
+            border-left: 4px solid var(--error-red);
+            color: #721c24;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="header-container">
+            <a href="#" class="logo">
+                <div class="logo-icon">🚂</div>
+                <span>Indian Railways</span>
+            </a>
+            <nav class="header-nav">
+                <a href="#" class="nav-link">Book Tickets</a>
+                <a href="#" class="nav-link">PNR Status</a>
+                <a href="#" class="nav-link">Train Schedule</a>
+                <a href="#" class="nav-link">Help</a>
+                <a href="#" class="login-btn">Login / Sign Up</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <h1>Book Train Tickets with Ease</h1>
+        <p>Fast, Simple, and Reliable Railway Booking</p>
+    </section>
+
+    <!-- SEARCH SECTION -->
+    <div class="search-container">
+        <div class="search-card">
+            <h2 class="search-title">🎫 Search Trains</h2>
+            
+            <!-- Info Alert -->
+            <div class="alert alert-info" style="display: flex;">
+                <span>💡</span>
+                <span><strong>No login required!</strong> Search trains first, login only when booking.</span>
+            </div>
+
+            <form class="search-form" id="searchForm">
+                <div class="form-row" style="position: relative;">
+                    <div class="form-group">
+                        <label class="form-label">
+                            From
+                            <span class="help-icon">?</span>
+                            <span class="tooltip">Enter station name or city. All stations in that city will be shown.</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            placeholder="e.g., Mumbai, Delhi, Bangalore" 
+                            required
+                            list="fromStations"
+                        >
+                        <datalist id="fromStations">
+                            <option value="Mumbai (All Stations)">
+                            <option value="Mumbai Central">
+                            <option value="Mumbai CST">
+                            <option value="Delhi (All Stations)">
+                            <option value="New Delhi">
+                            <option value="Old Delhi">
+                            <option value="Bangalore (All Stations)">
+                            <option value="Bangalore City">
+                            <option value="Yeshwantpur">
+                        </datalist>
+                    </div>
+
+                    <button type="button" class="swap-btn" title="Swap stations">⇄</button>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            To
+                            <span class="help-icon">?</span>
+                            <span class="tooltip">Enter destination station or city name.</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            placeholder="e.g., Chennai, Kolkata, Hyderabad" 
+                            required
+                            list="toStations"
+                        >
+                        <datalist id="toStations">
+                            <option value="Chennai (All Stations)">
+                            <option value="Chennai Central">
+                            <option value="Chennai Egmore">
+                            <option value="Kolkata (All Stations)">
+                            <option value="Howrah">
+                            <option value="Sealdah">
+                            <option value="Hyderabad (All Stations)">
+                            <option value="Hyderabad Deccan">
+                            <option value="Secunderabad">
+                        </datalist>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Journey Date</label>
+                        <input 
+                            type="date" 
+                            class="form-input" 
+                            required
+                            min="2025-11-03"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            Class
+                            <span class="help-icon">?</span>
+                            <span class="tooltip">Select your preferred travel class. See details below for each class.</span>
+                        </label>
+                        <select class="form-input" required>
+                            <option value="">Select Class</option>
+                            <option value="all">All Classes</option>
+                            <option value="1A">1AC - First AC</option>
+                            <option value="2A">2AC - Second AC</option>
+                            <option value="3A">3AC - Third AC</option>
+                            <option value="SL">SL - Sleeper</option>
+                            <option value="2S">2S - Second Sitting</option>
+                            <option value="CC">CC - AC Chair Car</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="flexibleDate">
+                        <span>Flexible with dates (±2 days)</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="tatkal">
+                        <span>Tatkal tickets only</span>
+                    </label>
+                </div>
+
+                <div style="text-align: center;">
+                    <button type="submit" class="search-btn">Search Trains</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CLASS INFORMATION SECTION -->
+    <section class="class-info">
+        <h2>Understanding Train Classes</h2>
+        <div class="class-grid">
+            <div class="class-card">
+                <div class="class-name">1AC</div>
+                <div class="class-full-name">First Class AC</div>
+                <ul class="class-features">
+                    <li>4 berths per cabin with door</li>
+                    <li>AC with individual controls</li>
+                    <li>Bedding & meals included</li>
+                    <li>Most expensive option</li>
+                </ul>
+            </div>
+
+            <div class="class-card">
+                <div class="class-name">2AC</div>
+                <div class="class-full-name">Second Class AC</div>
+                <ul class="class-features">
+                    <li>6 berths per bay with curtain</li>
+                    <li>AC with comfortable berths</li>
+                    <li>Bedding included</li>
+                    <li>Good balance of comfort & price</li>
+                </ul>
+            </div>
+
+            <div class="class-card">
+                <div class="class-name">3AC</div>
+                <div class="class-full-name">Third Class AC</div>
+                <ul class="class-features">
+                    <li>8 berths per bay (open)</li>
+                    <li>AC with basic comfort</li>
+                    <li>Bedding included</li>
+                    <li>Most popular AC option</li>
+                </ul>
+            </div>
+
+            <div class="class-card">
+                <div class="class-name">SL</div>
+                <div class="class-full-name">Sleeper Class</div>
+                <ul class="class-features">
+                    <li>8 berths per bay (open)</li>
+                    <li>Non-AC with fans</li>
+                    <li>No bedding provided</li>
+                    <li>Most economical for long trips</li>
+                </ul>
+            </div>
+
+            <div class="class-card">
+                <div class="class-name">CC</div>
+                <div class="class-full-name">AC Chair Car</div>
+                <ul class="class-features">
+                    <li>Reclining seats (no berths)</li>
+                    <li>AC with charging points</li>
+                    <li>Best for day journeys</li>
+                    <li>Comfortable seating</li>
+                </ul>
+            </div>
+
+            <div class="class-card">
+                <div class="class-name">2S</div>
+                <div class="class-full-name">Second Sitting</div>
+                <ul class="class-features">
+                    <li>Regular seats (no berths)</li>
+                    <li>Non-AC with fans</li>
+                    <li>Best for short journeys</li>
+                    <li>Most economical option</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXAMPLE RESULTS SECTION -->
+    <div class="results-container" id="resultsSection">
+        <div class="results-header">
+            <h2 style="margin-bottom: 10px;">Available Trains: Mumbai → Delhi</h2>
+            <p style="color: var(--text-gray); margin-bottom: 15px;">Showing 15 trains for 15 Nov 2025</p>
+            
+            <div class="filter-section">
+                <button class="filter-btn active">All Trains</button>
+                <button class="filter-btn">Morning Departure</button>
+                <button class="filter-btn">Evening Departure</button>
+                <button class="filter-btn">Duration: Less than 18h</button>
+                <button class="filter-btn">Available Only</button>
+            </div>
+        </div>
+
+        <!-- Train Card Example -->
+        <div class="train-card">
+            <div class="train-header">
+                <div class="train-info">
+                    <div class="train-number">12952</div>
+                    <div class="train-name">Mumbai Rajdhani Express</div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="color: var(--success-green); font-weight: 600;">Runs Daily</div>
+                </div>
+            </div>
+
+            <div class="train-schedule">
+                <div class="station-time">
+                    <div class="time">16:40</div>
+                    <div class="station">Mumbai Central</div>
+                    <div style="font-size: 0.85rem; color: var(--text-gray); margin-top: 3px;">15 Nov</div>
+                </div>
+
+                <div class="duration">
+                    <div class="duration-time">15h 50m</div>
+                    <div class="duration-label">Travel Time</div>
+                </div>
+
+                <div class="station-time">
+                    <div class="time">08:30</div>
+                    <div class="station">New Delhi</div>
+                    <div style="font-size: 0.85rem; color: var(--text-gray); margin-top: 3px;">16 Nov</div>
+                </div>
+            </div>
+
+            <div class="availability-section">
+                <div class="availability-item">
+                    <div class="class-type">1AC</div>
+                    <div class="seats-available available">28 Available</div>
+                    <div class="fare">₹3,450</div>
+                </div>
+
+                <div class="availability-item">
+                    <div class="class-type">2AC</div>
+                    <div class="seats-available available">42 Available</div>
+                    <div class="fare">₹2,150</div>
+                </div>
+
+                <div class="availability-item">
+                    <div class="class-type">3AC</div>
+                    <div class="seats-available available">156 Available</div>
+                    <div class="fare">₹1,560</div>
+                </div>
+
+                <div class="availability-item">
+                    <div class="class-type">SL</div>
+                    <div class="seats-available waitlist">WL 12</div>
+                    <div class="fare">₹540</div>
+                </div>
+            </div>
+
+            <div style="text-align: right; margin-top: 20px;">
+                <button class="book-btn">Book Now →</button>
+            </div>
+        </div>
+
+        <!-- Another Train Card -->
+        <div class="train-card">
+            <div class="train-header">
+                <div class="train-info">
+                    <div class="train-number">12954</div>
+                    <div class="train-name">August Kranti Rajdhani</div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="color: var(--success-green); font-weight: 600;">Runs Daily</div>
+                </div>
+            </div>
+
+            <div class="train-schedule">
+                <div class="station-time">
+                    <div class="time">17:20</div>
+                    <div class="station">Mumbai Central</div>
+                    <div style="font-size: 0.85rem; color: var(--text-gray); margin-top: 3px;">15 Nov</div>
+                </div>
+
+                <div class="duration">
+                    <div class="duration-time">16h 35m</div>
+                    <div class="duration-label">Travel Time</div>
+                </div>
+
+                <div class="station-time">
+                    <div class="time">09:55</div>
+                    <div class="station">Hazrat Nizamuddin</div>
+                    <div style="font-size: 0.85rem; color: var(--text-gray); margin-top: 3px;">16 Nov</div>
+                </div>
+            </div>
+
+            <div class="availability-section">
+                <div class="availability-item">
+                    <div class="class-type">1AC</div>
+                    <div class="seats-available available">15 Available</div>
+                    <div class="fare">₹3,500</div>
+                </div>
+
+                <div class="availability-item">
+                    <div class="class-type">2AC</div>
+                    <div class="seats-available available">38 Available</div>
+                    <div class="fare">₹2,200</div>
+                </div>
+
+                <div class="availability-item">
+                    <div class="class-type">3AC</div>
+                    <div class="seats-available waitlist">WL 8</div>
+                    <div class="fare">₹1,600</div>
+                </div>
+
+                <div class="availability-item">
+                    <div class="class-type">SL</div>
+                    <div class="seats-available not-available">Not Available</div>
+                    <div class="fare">₹550</div>
+                </div>
+            </div>
+
+            <div style="text-align: right; margin-top: 20px;">
+                <button class="book-btn">Book Now →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FEATURES SECTION -->
+    <section class="features">
+        <h2>Why Book With Us?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-title">Lightning Fast</div>
+                <div class="feature-desc">Book tickets in under 2 minutes with our streamlined process</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <div class="feature-title">100% Secure</div>
+                <div class="feature-desc">Your payment information is encrypted and completely safe</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <div class="feature-title">Mobile Friendly</div>
+                <div class="feature-desc">Book from anywhere on any device - fully responsive design</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <div class="feature-title">24/7 Support</div>
+                <div class="feature-desc">Round-the-clock customer support to help you anytime</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="#">PNR Status</a></li>
+                    <li><a href="#">Train Schedule</a></li>
+                    <li><a href="#">Refund Rules</a></li>
+                    <li><a href="#">Fare Calculator</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Information</h3>
+                <ul class="footer-links">
+                    <li><a href="#">About IRCTC</a></li>
+                    <li><a href="#">Terms & Conditions</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Services</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Mobile App</a></li>
+                    <li><a href="#">Tourism Packages</a></li>
+                    <li><a href="#">Catering Services</a></li>
+                    <li><a href="#">Retiring Rooms</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Connect With Us</h3>
+                <ul class="footer-links">
+                    <li><a href="#">📧 support@indianrailways.gov.in</a></li>
+                    <li><a href="#">📞 139 (Helpline)</a></li>
+                    <li><a href="#">🐦 Twitter</a></li>
+                    <li><a href="#">📘 Facebook</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 Indian Railways. All Rights Reserved. | Improved User Experience Design</p>
+        </div>
+    </footer>
+
+    <!-- SIMPLE JAVASCRIPT -->
+    <script>
+        // Swap stations functionality
+        document.querySelector('.swap-btn')?.addEventListener('click', function() {
+            const fromInput = document.querySelector('.form-row input[type="text"]');
+            const toInput = document.querySelectorAll('.form-row input[type="text"]')[1];
+            const temp = fromInput.value;
+            fromInput.value = toInput.value;
+            toInput.value = temp;
+        });
+
+        // Form submission
+        document.getElementById('searchForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Show results section (in real implementation, this would fetch data)
+            const resultsSection = document.getElementById('resultsSection');
+            if (resultsSection) {
+                resultsSection.style.display = 'block';
+                resultsSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+
+        // Filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.querySelector('input[type="date"]').setAttribute('min', today);
+    </script>
+</body>
+</html>
